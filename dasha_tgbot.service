@@ -1,0 +1,14 @@
+[Unit]
+Description=Telegram Bot
+After=network.target
+
+[Service]
+User=dasha
+Group=dasha
+
+WorkingDirectory=/home/dasha/bot_innopolis/
+Environment="PYTHONPATH=/home/dasha/bot_innopolis/"
+ExecStart=/home/dasha/bot_innopolis/.venv/bin/python /home/dasha/bot_innopolis/main.py
+
+[Install]
+WantedBy=multi-user.target
