@@ -39,7 +39,7 @@ async def start_handler(message: types.Message, state: FSMContext):
     await message.answer(**main_menu)
 
 
-@dp.callback_query_handler(lambda c: c.data == 'help')
+@dp.callback_query_handler(lambda c: c.data == 'help', state="*")
 async def help_handler(callback_query: types.CallbackQuery):
     await callback_query.answer()
     await callback_query.message.edit_text(f"{documentation}", reply_markup=back_keyboard)
@@ -66,6 +66,8 @@ async def add_handler(callback_query: types.CallbackQuery, state: FSMContext):
         await state.update_data()
         data = await state.get_data()
         if len(data["plans"]) != 0:
+            await callback_query.message.answer(f"Если что, вот твой список:")
+            await callback_query.message.answer('\n'.join(data["plans"]))
             await callback_query.message.edit_text(f"Напиши что-то и я пополню твой список")
             await state.set_state("get_add")
     except:
@@ -79,6 +81,8 @@ async def delete_handler(callback_query: types.CallbackQuery, state: FSMContext)
         await state.update_data()
         data = await state.get_data()
         if len(data["plans"]) != 0:
+            await callback_query.message.answer(f"Если что, вот твой список:")
+            await callback_query.message.answer('\n'.join(data["plans"]))
             await callback_query.message.edit_text(f"Напиши мне что-то из своего списка и я удалю это")
             await state.set_state("get_delete")
     except:
@@ -93,7 +97,7 @@ async def show_handler(callback_query: types.CallbackQuery, state: FSMContext):
         data = await state.get_data()
         if len(data["plans"]) > 0:
             await callback_query.message.answer(f"Вот твой список:")
-            await callback_query.message.answer(data["plans"], reply_markup=back_keyboard_add_delete)
+            await callback_query.message.answer('\n'.join(data["plans"]), reply_markup=back_keyboard_add_delete)
     except:
         await callback_query.message.edit_text(f"Твой список пуст, чтобы его заполнить нажмите plans", reply_markup = back_keyboard)
 
@@ -172,9 +176,9 @@ async def get_delete_handler(message: types.message, state: FSMContext):
                 else:
                     await message.answer(f"{smiles_for_plans[random.randint(0, 12)]}{line}")
         else:
-            await message.answer("Твой список пуст",reply_markup=back_keyboard )
+            await message.answer("Твой список пуст", reply_markup=back_keyboard)
     except:
-        await message.answer("Такого нет в твоем списке")
+        await message.answer("Такого нет в твоем списке", reply_markup=back_keyboard)
 
 
 executor.start_polling(dp, skip_updates=True)
