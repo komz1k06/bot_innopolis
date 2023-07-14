@@ -17,7 +17,7 @@ async def spam_start(user_id: int):
 
     while True:
         await bot.send_message(user_id, f"{phrases[random.randint(0, 18)]}\n"
-                                        f"Не забывай про свой список дел, если такой имеется)")
+                                        f"Не забывай про свой список дел, если такой имеется)", reply_markup=back_keyboard)
         await asyncio.sleep(1800)
 
 
